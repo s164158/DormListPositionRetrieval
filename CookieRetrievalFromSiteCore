@@ -1,0 +1,30 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+
+chrome_options = Options()
+chrome_options.add_argument("--headless")##no browser opens!!
+WINDOW_Size="1920,1080"
+chrome_options.add_argument("--window-size=%s" % WINDOW_Size)
+driver = webdriver.Chrome(chrome_options=chrome_options)
+
+driver.get("https://www.jax.org/")
+
+cookies_list = driver.get_cookies()
+cookies_dict = {}
+for cookie in cookies_list:
+    cookies_dict[cookie['name']] = cookie['value']
+matching = []
+
+listofkeys = list(cookies_dict.keys())
+
+if "SC_ANALYTICS_GLOBAL_COOKIE" or "SC_ANALYTICS_SESSION_COOKIE" in listofkeys:
+    for key in listofkeys:
+        if key == ("SC_ANALYTICS_GLOBAL_COOKIE" or "SC_ANALYTICS_SESSION_COOKIE"): #remember parenthesises here lol.
+            matching.append(key)
+
+    print("Site is most likely a sitecore site")
+
+print(listofkeys)
+print(matching)
+
