@@ -8,7 +8,8 @@ WINDOW_Size="1920,1080"
 chrome_options.add_argument("--window-size=%s" % WINDOW_Size)
 driver = webdriver.Chrome(chrome_options=chrome_options)
 
-driver.get("https://www.jax.org/")
+#driver.get("https://www.jax.org/")
+driver.get("https://www.spejdersport.dk/")
 
 cookies_list = driver.get_cookies()
 cookies_dict = {}
@@ -18,12 +19,13 @@ matching = []
 
 listofkeys = list(cookies_dict.keys())
 
-if "SC_ANALYTICS_GLOBAL_COOKIE" or "SC_ANALYTICS_SESSION_COOKIE" in listofkeys:
+if ("SC_ANALYTICS_GLOBAL_COOKIE" or "SC_ANALYTICS_SESSION_COOKIE") in listofkeys:
+    print("Site is most likely a sitecore site")
     for key in listofkeys:
         if key == ("SC_ANALYTICS_GLOBAL_COOKIE" or "SC_ANALYTICS_SESSION_COOKIE"): #remember parenthesises here lol.
             matching.append(key)
-
-    print("Site is most likely a sitecore site")
+else:
+    print("Site is most likely NOT a sitecore site")
 
 print(listofkeys)
 print(matching)
