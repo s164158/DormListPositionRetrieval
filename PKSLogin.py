@@ -5,16 +5,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import numpy as np
+import copy
 
 chrome_options = Options()
-chrome_options.add_argument("--headless")##no browser opens!!
+#chrome_options.add_argument("--headless")##no browser opens!!
 WINDOW_Size="1920,1080"
 chrome_options.add_argument("--window-size=%s" % WINDOW_Size)
 driver = webdriver.Chrome(chrome_options=chrome_options)
 
 
-username = "xxxx"
-password = "XXXX"
+username = "45937"
+password = "Jegelskerkage1"
 driver.get("https://pks.dk/login/")
 
 # assert "Python" in driver.title
@@ -73,9 +74,63 @@ del finalvaluelist[0:4]
 
 #just the integer values
 poslist = [int(item.split()[1]) for item in finalvaluelist] #does not check if value is actually a digit
-print(DormList)
-print(poslist)
+#print(DormList)
+#print(poslist)
 
 combinedlist = [final for x in zip(DormList,poslist) for final in x]
 print(combinedlist)
 #driver.refresh()
+
+
+driver.get("https://www.findbolig.nu/logind.aspx")
+findboligusername = driver.find_element_by_id('ctl00_placeholdercontent_1_txt_UserName')
+findboligpassword = driver.find_element_by_id('ctl00_placeholdercontent_1_txt_Password')
+findboligusername.send_keys(username)
+findboligpassword.send_keys(password)
+findboligpassword.send_keys(Keys.RETURN)
+
+driver.get("https://www.findbolig.nu/Findbolig-nu/Min-side/ventelisteboliger/opskrivninger")
+
+urls_hrefs = driver.find_elements_by_class_name('bulletLink')#.get_attribute("href")
+#print(url)
+
+OpskrivningsHREFlist = []
+
+for item in urls_hrefs:
+    OpskrivningsHREFlist.append(item.get_attribute("href"))
+
+xop = copy.deepcopy(OpskrivningsHREFlist)
+del OpskrivningsHREFlist[0:5]
+del OpskrivningsHREFlist[-3:-1] #these three lines could be muuch more elegant, but this is a quick fix.
+del OpskrivningsHREFlist[-1]
+
+#print(OpskrivningsHREFlist)
+
+#driver.get(OpskrivningsHREFlist[0])
+listOfNames = []
+listOfPositions = []
+
+##findbolig er legit den langsommeste responding server jeg nogensinde har set, derfor tager det her over flere minutter hvis der er mange opskrivninger
+for hreflink in OpskrivningsHREFlist:
+    driver.get(hreflink)
+    listOfNames.append(driver.find_element_by_id('ctl00_placeholdercontent_0_LabelBuildingNameTop').text)
+    driver.find_element_by_link_text("Min placering på ventelisten").click()
+    #listOfPositions.append(driver.find_elements_by_xpath('//*[@id="popupWaitlistRankText"]/p[1]/strong'))
+
+    listOfPositions.append(WebDriverWait(driver,20).until(EC.presence_of_element_located((By.XPATH,'//*[@id="popupWaitlistRankText"]/p[1]/strong'))).text)
+
+
+
+
+#print(listOfNames)
+
+combinedlistfindbolig = [final for x in zip(listOfNames,listOfPositions) for final in x]
+print(combinedlistfindbolig)
+
+thefile = open('test.txt','w')
+for item in combinedlistfindbolig:
+    thefile.write("%s\n" % item)
+
+thefile.close()
+
+#driver.close()
