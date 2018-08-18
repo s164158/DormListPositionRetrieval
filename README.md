@@ -4,4 +4,4 @@ Retrieves dorm name &amp; position on PKS dorm website provided a username &amp;
 Retrieves Building name & position on Findbolig site provided a username & password.  Outputs txt file. 
 
 
-Uses Selenium for driver the browser
+Uses Selenium for driving the browser
