@@ -14,8 +14,8 @@ chrome_options.add_argument("--window-size=%s" % WINDOW_Size)
 driver = webdriver.Chrome(chrome_options=chrome_options)
 
 
-username = "45937"
-password = "Jegelskerkage1"
+username = "xxx"
+password = "xx"
 driver.get("https://pks.dk/login/")
 
 # assert "Python" in driver.title
