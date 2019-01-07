@@ -13,7 +13,7 @@ WINDOW_Size="1920,1080"
 chrome_options.add_argument("--window-size=%s" % WINDOW_Size)
 driver = webdriver.Chrome(chrome_options=chrome_options)
 
-
+dankstuff = "dankstuff"
 username = "xxx"
 password = "xx"
 driver.get("https://pks.dk/login/")
